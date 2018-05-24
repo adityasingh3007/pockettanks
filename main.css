@@ -1,0 +1,52 @@
+body {margin:0px;padding:0px;font-family:hps;background:#000}
+
+@font-face {
+    font-family:hps;
+    src: url("./HPSimplified.ttf");
+			}
+* {box-sizing:border-box}
+			
+.body_container {margin:20px;max-width:822px;margin-left:auto;margin-right:auto;background:#fff;padding:10px}
+
+.game_header {background:#1589FF;width:100%;padding:10px 5px 10px 5px;border:1px solid #000;border-bottom:0px;color:#fff}
+
+table {font-weight:bold}
+
+.lalign {text-align:left}
+
+.calign {text-align:center}
+
+.ralign {text-align:right}
+
+.player_name {font-size:22px;color:#fff;letter-spacing:2px}
+
+.score_cont {padding-top:8px;letter-spacing:1px;font-size:20px;color:#fff}
+
+#volley_count {font-size:25px;color: #c7efed;text-shadow: 0px -1px 2px #000;}
+
+#canvas_container {width:100%}
+
+.controller_container {background:#009681e0;width:100%;padding:10px 5px 10px 5px;margin-top:-5px;
+					   border: 10px solid #1589FF;border-style: ridge;}
+
+.controller_container td {padding:2px;border-radius:5px}
+
+.game_control_com {}
+
+.game_controller_table td {background:#000;box-shadow: 0px 0px 20px 1px #400707;}
+
+.control_head {color:#fff}
+
+.control_adjuster {margin:10px}
+
+.control_adjuster select {padding:10px;width:100%;} 
+
+.control_text_inp {outline:none;border:none;padding:10px;width:50%;text-align:center}
+
+.fire_button {border: 0px;padding: 10px;text-align: center;font-weight: bold;width: 70%;background: #FFFF00;
+			  box-shadow: 2px 2px 8px 1px #000;cursor:pointer;transition:all 0.5s}
+
+.fire_button:hover {transform:scale(1.2);border-radius: 10px;}
+
+			  
+
