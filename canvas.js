@@ -17,6 +17,9 @@ var score_2=0;
 var volley_count=1;
 var suffix="";
 
+var pause=false;
+var text=false;
+
 function game_data() {
 	document.getElementById("player1_name").focus();
 }
@@ -60,7 +63,10 @@ var game_area = {
     },
 	stop : function() {
         clearInterval(this.interval);
-    }
+    },
+	resume : function() {
+		this.interval = setInterval(updateGameArea, 20);
+	}
 }
 
 function component(width, height, color, x, y) {
@@ -558,6 +564,16 @@ function shot_create(x,y,angle,power) {
 	}
 }
 
+function add_text(text) {
+		this.text=text;
+		this.update = function(){
+		ctx = game_area.context;
+		ctx.font="bold 30px Arial";
+		ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+		ctx.fillText(this.text,game_area.canvas.width/2,game_area.canvas.height/2);
+	}
+}
 function updateGameArea() {
     game_area.clear();
     land_piece.update();
@@ -579,7 +595,10 @@ function updateGameArea() {
 		shot1.update();
 	if(shot2!=false)
 		shot2.update();
-	
+	if(pause!=false)
+		pause.update();
+    if(text!=false)
+		text.update();
 }
 function over_volley_check() {
 	switch(volley_count) {
@@ -670,6 +689,27 @@ function submit_game_data() {
 		document.getElementById("input_container").style.display="none";
 		document.getElementById("loading").style.display="block";
 		setTimeout(initiallize, 3000);
+	}
+}
+
+function play_pause() {
+	var val=document.getElementById("play_pause").value;
+	if(val=="PAUSE") {
+		document.getElementById("play_pause").value="RESUME";
+		document.getElementById("play_pause").style.background="green";
+		document.getElementById("play_pause").style.color="#fff";
+		pause=new component(800,300,"#827b609e", 0,0);
+		text=new add_text("PAUSED");
+		updateGameArea();
+		game_area.stop();
+	}
+	else {
+		document.getElementById("play_pause").value="PAUSE";
+		document.getElementById("play_pause").style.background="#ddd";
+		document.getElementById("play_pause").style.color="#000";
+		pause=false;
+		text=false;
+		game_area.resume();
 	}
 }
 	
