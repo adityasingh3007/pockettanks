@@ -1,3 +1,5 @@
+var player1_name="";
+var player2_name="";
 
 var land_piece;
 var cloud_img;
@@ -13,9 +15,11 @@ var turn=1;
 var score_1=0;
 var score_2=0;
 var volley_count=1;
-var suffix="st";
+var suffix="";
 
-
+function game_data() {
+	document.getElementById("player1_name").focus();
+}
 function startGame() {
 	game_area.start();
     land_piece = new component(800,20, "#827B60", 0, 280);
@@ -28,9 +32,11 @@ function startGame() {
 	arrow = new add_arrow();
 	aim1 = new load_aim();
 	aim2 = new load_aim();
+	document.getElementById("player_1_name").innerHTML=player1_name;
+	document.getElementById("player_2_name").innerHTML=player2_name;
 	document.getElementById("player_1_score").innerHTML=score_1;
 	document.getElementById("player_2_score").innerHTML=score_2;
-	document.getElementById("volley_count").innerHTML=volley_count+suffix+ " Volley";
+	document.getElementById("volley_count").innerHTML=suffix+ " Volley";
 }
 
 var game_area = {
@@ -41,7 +47,6 @@ var game_area = {
 		this.canvas.style.border="1px solid #000";
 		this.canvas.style.borderTop="0px";
         this.context = this.canvas.getContext("2d");
-        //document.getElementById("canvas_container").insertBefore(this.canvas,document.getElementById("canvas_container").childNodes[0]);
 		this.interval = setInterval(updateGameArea, 20);
     },
     clear : function() {
@@ -52,6 +57,9 @@ var game_area = {
 		grd.addColorStop(1,"#ADDFFF");
 		ctx.fillStyle=grd;
         ctx.fillRect(0,0,800,300);
+    },
+	stop : function() {
+        clearInterval(this.interval);
     }
 }
 
@@ -228,10 +236,13 @@ function shot_create(x,y,angle,power) {
 		if((this.y>270)||(this.x>800)||(this.x<0)) {
 			shot1=false;
 			shot2=false;
-			if(turn==2)
-				document.getElementById("fire_2").disabled=false;
-			else
+			if(turn==1) {
 				document.getElementById("fire_1").disabled=false;
+				volley_count++;
+				
+			}
+			else
+				document.getElementById("fire_2").disabled=false;
 			arrow=new add_arrow();
 		}
 		if(this.x>=mountain.start_x&&this.x<=mountain.end_x) {
@@ -242,10 +253,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 					    arrow=new add_arrow();
 				    }
 				}
@@ -258,10 +272,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -274,10 +291,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -290,10 +310,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -306,10 +329,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -322,10 +348,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -338,10 +367,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -354,10 +386,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -370,10 +405,12 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -386,10 +423,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -402,10 +442,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -418,10 +461,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -434,10 +480,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -450,10 +499,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -466,10 +518,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -482,10 +537,13 @@ function shot_create(x,y,angle,power) {
 					if(val>0) {
 						shot1=false;
 						shot2=false;
-						if(turn==2)
-							document.getElementById("fire_2").disabled=false;
-						else
+						if(turn==1) {
 							document.getElementById("fire_1").disabled=false;
+							volley_count++;
+							
+						}
+						else
+							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
 				    }
 				}
@@ -508,6 +566,10 @@ function updateGameArea() {
 		cloud_img.x=-120;
 	cloud_img.update();
 	tank.update();
+	document.getElementById("player_1_score").innerHTML=score_1;
+	document.getElementById("player_2_score").innerHTML=score_2;
+	document.getElementById("volley_count").innerHTML=suffix+" Volley";
+	over_volley_check();
 	mountain.update();
 	if(arrow!=false)
 		arrow.update();
@@ -517,11 +579,42 @@ function updateGameArea() {
 		shot1.update();
 	if(shot2!=false)
 		shot2.update();
-	document.getElementById("player_1_score").innerHTML=score_1;
-	document.getElementById("player_2_score").innerHTML=score_2;
-	document.getElementById("volley_count").innerHTML=volley_count+suffix+" Volley";
+	
 }
-
+function over_volley_check() {
+	switch(volley_count) {
+		case 1: suffix="1st";
+				break;
+		case 2: suffix="2nd";
+				break;
+		case 3: suffix="3rd";
+				break;
+		case 4: suffix="4th";
+				break;
+		case 5: suffix="5th";
+				break;
+		case 6: suffix="6th";
+				break;
+		case 7: suffix = "7th";
+				break;
+		case 8: suffix="8th";
+				break;
+		case 9: suffix="9th";
+				break;
+		case 10:suffix="Final";
+				break;
+		default: suffix="";
+	}
+	if(volley_count>10) {
+		shot1=false;
+		shot2=false;
+		arrow=false;
+		game_area.stop();
+		document.getElementById("volley_count").innerHTML="Game Over";
+		document.getElementById("fire_2").disabled=true;
+		document.getElementById("fire_1").disabled=true;
+	}
+}
 function fire1() {
 	document.getElementById("control_player1").style.display="none";
 	document.getElementById("control_player2").style.display="block";
@@ -543,16 +636,40 @@ function fire2() {
 	shot2= new shot_create(755,267,document.getElementById("angle_2").value,document.getElementById("power_2").value);
 	document.getElementById("player_2_name").style.color="#fff";
 	document.getElementById("player_2_name").style.textShadow="none";
-	volley_count++;
-	switch(volley_count) {
-		case 1: suffix="st";
-				break;
-		case 2: suffix = "nd";
-				break;
-		case 3: suffix="rd";
-				break;
-		default: suffix="th";
+}
+
+function ui_enable(x) {
+	var val=document.getElementById("player"+x+"_name").value;
+	if(val!="") {
+		document.getElementById("pl"+x+"_name").style.height="15px";
 	}
-	if(volley_count>10) {
+	else
+		document.getElementById("pl"+x+"_name").style.height="0px";
+}
+
+function initiallize() {
+	document.getElementById("loading").style.display="none";
+	document.getElementById("welcome_screen").style.display="none";
+	document.getElementById("game_container").style.display="block";
+	startGame();
+}
+function submit_game_data() {
+	player1_name=document.getElementById("player1_name").value;
+	player2_name=document.getElementById("player2_name").value;
+	if(player1_name==""||player2_name=="") {
+		document.getElementById("error_box").style.display="block";
+		if(player1_name=="")
+			document.getElementById("player1_name").focus();
+		else
+			document.getElementById("player2_name").focus();
+	}
+	else
+	if(player1_name!=""&&player2_name!="") {
+		document.getElementById("error_box").style.display="none";
+		document.getElementById("instruction").style.display="none";
+		document.getElementById("input_container").style.display="none";
+		document.getElementById("loading").style.display="block";
+		setTimeout(initiallize, 3000);
 	}
 }
+	

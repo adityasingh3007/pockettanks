@@ -4,11 +4,11 @@
 <title>Pocket Tanks</title>
 <link href="./main.css" rel="stylesheet">
 </head>
-<body onLoad="startGame();">
+<body onLoad="game_data();">
 	<div class="page_container">
 		<center>
 		<div class="body_container">
-			<div class="game_container">
+			<div class="game_container" id="game_container" style="display:none;">		
 			    <div class="game_header">
 				<table style="width:100%">
 					<tr>
@@ -102,6 +102,40 @@
 					</td>
 					</tr>
 				    </table>
+				</div>
+			</div>
+			<div class="welcome_screen" id="welcome_screen" style="display:block">
+				<div class="welcome_screen_container">
+					<div class="ws_header ws_div">
+					 Welcome to <b>POCKET TANKS</b>
+					 <hr>
+					</div>
+					<div class="instructions ws_div" id="instruction" style="display:block">
+					Provide the following details to play the game.
+					</div>
+					<div class="ws_div user_input_container" id="input_container" style="display:block">
+						<div class="cfx ws_div error" id="error_box" style="display:none;">
+							You missed one of the field! Please fill and submit again.
+						</div>
+						<br>
+						<div class="cfx ws_div">
+						<div class="active_text" id="pl1_name" style="height:0px;overflow:none;">Player 1 Name :</div>
+						<input type="text" placeholder="Player 1 Name" class="uitext" value="" id="player1_name" oninput="ui_enable(1);">
+						</div>
+						<br>
+						<div class="cfx ws_div">
+						<div class="active_text" id="pl2_name" style="height:0px;overflow:none;">Player 2 Name :</div>
+						<input type="text" placeholder="Player 2 Name" class="uitext" value="" id="player2_name" oninput="ui_enable(2);">
+						</div>
+						<br>
+						<div class="cfx ws_div button_cont">
+						<input type="submit" class="uibutton" value="Submit" id="" onclick="submit_game_data();">
+						</div>
+					</div>
+					<br>
+					<div id="loading" style="display:none">
+						<img src="./loading_icon.gif" style="width:70%">
+					</div>
 				</div>
 			</div>
 		</div>
