@@ -8,8 +8,14 @@ var mountain;
 var arrow=false;
 var aim1;
 var aim2;
+
+var weapon="";
+
 var shot1=false;
 var shot2=false;
+
+var fire=false;
+var fire_sound;
 
 var turn=1;
 var score_1=0;
@@ -19,6 +25,9 @@ var suffix="";
 
 var pause=false;
 var text=false;
+var winner=false;
+
+var score_display=false;
 
 function game_data() {
 	document.getElementById("player1_name").focus();
@@ -40,6 +49,7 @@ function startGame() {
 	document.getElementById("player_1_score").innerHTML=score_1;
 	document.getElementById("player_2_score").innerHTML=score_2;
 	document.getElementById("volley_count").innerHTML=suffix+ " Volley";
+	fire_sound = new sound("./takeshot.mp3");
 }
 
 var game_area = {
@@ -67,6 +77,21 @@ var game_area = {
 	resume : function() {
 		this.interval = setInterval(updateGameArea, 20);
 	}
+}
+
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.getElementById("canvas_container").appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
 }
 
 function component(width, height, color, x, y) {
@@ -223,22 +248,214 @@ function add_mountain(x,y,gap) {
 	}
 }
 
+function add_score(text,condition) {
+		this.text=text
+		this.x=0;
+		if(turn==2)
+			this.x=750;
+		else
+			this.x=40;
+		this.color="#0041C2";
+		if(condition=="danger") {
+			this.color="red";
+			if(turn==2)
+				this.x=40;
+			else
+				this.x=750;
+		}
+		this.y=260;
+		this.dy=-2;
+		this.update = function(){
+			this.y+=this.dy;
+			ctx = game_area.context;
+			ctx.font="bold 15px Arial";
+			ctx.fillStyle = this.color;
+			ctx.textAlign = "center";
+			ctx.fillText(this.text,this.x,this.y);		
+			if(this.y<200)
+				score_display=false;
+	}
+}
+
+function add_fire(x) {
+	this.x=x;
+	this.start_time=Date.now();
+	this.update = function(){
+		this.current_time=Date.now();
+		this.millis=this.current_time-this.start_time;
+		this.seconds=(this.millis/150);
+		if(this.seconds<=5) {
+			fire_img=document.getElementById("fire");
+			ctx = game_area.context;
+		    ctx.drawImage(fire_img,this.x,265,60,30);
+		}
+		else
+			fire=false;
+	}
+}
+
 function shot_create(x,y,angle,power) {
 	this.initial_x=x;
 	this.initial_y=y;
 	this.angle=angle*0.0175;
 	this.power=power;
+	if(this.power>100)
+		this.power=100;
+	if(this.power<0)
+		this.power=0;
 	this.u_x=this.power*Math.cos(this.angle);
 	this.u_y=this.power*Math.sin(this.angle);
+	this.time_of_flight=2*this.u_y/10;
 	this.start_time=Date.now();
 	this.x=x;
 	this.y=y;
+	this.score=0;
+	
+	this.radius=5;
+	this.color="#000";
 	this.update = function(){
 		this.current_time=Date.now();
 		this.millis=this.current_time-this.start_time;
 		this.seconds=(this.millis/150);
 		this.x=this.initial_x+this.u_x*(this.seconds);
 		this.y=this.initial_y-(this.u_y*this.seconds)+(5*this.seconds*this.seconds);
+		
+		if(this.y>=265&&this.y<=280) {
+				if(this.seconds>Math.abs(this.time_of_flight/2)){
+					if(this.x>=720&&this.x<=790) {
+						shot1=false;
+						shot2=false;
+						document.getElementById("fire_1").disabled=false;
+						document.getElementById("fire_2").disabled=false;
+						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
+						if((this.x>=720&&this.x<740)||(this.x>770&&this.x<=790)) {
+							if(weapon=="SmallShot") {
+								this.score=20;
+							}
+							else 
+							if(weapon=="BigShot") {
+								this.score=40;
+							}
+							else 
+							if(weapon=="AtomBomb") {
+								this.score=100;
+							}
+							else 
+							if(weapon=="FireBall") {
+								this.score=70;
+							}
+							else 
+							if(weapon=="Sniper") {
+								this.score=50;
+							} 
+						}
+						else {
+							if(weapon=="SmallShot") {
+								this.score=50;
+							}
+							else 
+							if(weapon=="BigShot") {
+								this.score=70;
+							}
+							else 
+							if(weapon=="AtomBomb") {
+								this.score=150;
+							}
+							else 
+							if(weapon=="FireBall") {
+								this.score=100;
+							}
+							else 
+							if(weapon=="Sniper") {
+								this.score=120;
+							} 	
+						}
+						if(turn==2){
+							if(weapon=="FireBall") {
+								fire=new add_fire(20);
+							}
+							score_display=new add_score(this.score,"plus");
+							score_1+=this.score;
+						}
+						else if(turn==1) {
+							if(weapon=="FireBall") {
+								fire=new add_fire(730);
+							}
+							score_display=new add_score(-this.score,"danger");
+							score_2-=this.score;
+							volley_count++;
+						}
+					}
+					else
+					if(this.x>=10&&this.x<=90) {
+						shot1=false;
+						shot2=false;
+						document.getElementById("fire_1").disabled=false;
+						document.getElementById("fire_2").disabled=false;
+						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false
+						if((this.x>=10&&this.x<30)||(this.x>70&&this.x<=90)) {
+							if(weapon=="SmallShot") {
+								this.score=20;
+							}
+							else 
+							if(weapon=="BigShot") {
+								this.score=40;
+							}
+							else 
+							if(weapon=="AtomBomb") {
+								this.score=100;
+							}
+							else 
+							if(weapon=="FireBall") {
+								this.score=70;
+							}
+							else 
+							if(weapon=="Sniper") {
+								this.score=50;
+							} 
+						}
+						else {
+							if(weapon=="SmallShot") {
+								this.score=50;
+							}
+							else 
+							if(weapon=="BigShot") {
+								this.score=70;
+							}
+							else 
+							if(weapon=="AtomBomb") {
+								this.score=150;
+							}
+							else 
+							if(weapon=="FireBall") {
+								this.score=100;
+							}
+							else 
+							if(weapon=="Sniper") {
+								this.score=120;
+							} 		
+						}
+						if(turn==2) {
+							if(weapon=="FireBall") {
+								fire=new add_fire(20);
+							}
+							score_display=new add_score(-this.score,"danger");
+							score_1-=this.score;
+						}
+						else if(turn==1) {
+							if(weapon=="FireBall") {
+								fire=new add_fire(730);
+							}
+							score_display=new add_score(this.score,"plus");
+							score_2+=this.score;
+							volley_count++;
+						}
+					}	
+				}				
+		}
+		else
 		if((this.y>270)||(this.x>800)||(this.x<0)) {
 			shot1=false;
 			shot2=false;
@@ -248,8 +465,9 @@ function shot_create(x,y,angle,power) {
 				
 			}
 			else
-				document.getElementById("fire_2").disabled=false;
+			document.getElementById("fire_2").disabled=false;
 			arrow=new add_arrow();
+			document.getElementById("play_pause").disabled=false;
 		}
 		if(this.x>=mountain.start_x&&this.x<=mountain.end_x) {
 			if(this.x>=mountain.start_x&&this.x<=mountain.node_cx1) {
@@ -267,6 +485,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 					    arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -286,6 +505,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -305,6 +525,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -324,6 +545,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -343,6 +565,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -362,6 +585,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -381,6 +605,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -400,6 +625,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -418,6 +644,7 @@ function shot_create(x,y,angle,power) {
 						}else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -437,6 +664,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -456,6 +684,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -475,6 +704,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -494,6 +724,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -513,6 +744,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -532,6 +764,7 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
@@ -551,29 +784,49 @@ function shot_create(x,y,angle,power) {
 						else
 							document.getElementById("fire_2").disabled=false;
 						arrow=new add_arrow();
+						document.getElementById("play_pause").disabled=false;
 				    }
 				}
 			}
 			
 		}
 		ctx.beginPath();
-		ctx.arc(this.x,this.y,5,0,2*Math.PI);
-		ctx.fillStyle="#000";
+		if(weapon=="SmallShot") {
+			this.radius=3;
+			this.color="#3b3b3b";
+		}
+		else
+		if(weapon=="BigShot") {
+			this.radius=5;
+			this.color="#493D26";	
+		}
+		else
+		if(weapon=="FireBall") {
+			this.radius=5;
+			this.color="#E42217";	
+		}
+		ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
+		ctx.fillStyle=this.color;
 		ctx.fill();
 		ctx.closePath();
 	}
 }
 
-function add_text(text) {
+function add_text(text,color="#000") {
 		this.text=text;
+		this.color=color;
 		this.update = function(){
 		ctx = game_area.context;
 		ctx.font="bold 30px Arial";
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = this.color;
         ctx.textAlign = "center";
-		ctx.fillText(this.text,game_area.canvas.width/2,game_area.canvas.height/2);
+		if(this.text=="GAME OVER"||this.text=="PAUSED")
+			ctx.fillText(this.text,game_area.canvas.width/2,game_area.canvas.height/2);
+		else
+			ctx.fillText(this.text,game_area.canvas.width/2,game_area.canvas.height/2+40);
 	}
 }
+
 function updateGameArea() {
     game_area.clear();
     land_piece.update();
@@ -591,14 +844,23 @@ function updateGameArea() {
 		arrow.update();
 	aim1.update(45,267,document.getElementById("angle_1").value);
 	aim2.update(755,267,document.getElementById("angle_2").value);
+	
 	if(shot1!=false)
 		shot1.update();
 	if(shot2!=false)
 		shot2.update();
+
+	if(fire!=false)
+		fire.update();
+	
 	if(pause!=false)
 		pause.update();
+	if(score_display!=false)
+		score_display.update();
     if(text!=false)
 		text.update();
+	if(winner!=false)
+		winner.update();
 }
 function over_volley_check() {
 	switch(volley_count) {
@@ -610,51 +872,62 @@ function over_volley_check() {
 				break;
 		case 4: suffix="4th";
 				break;
-		case 5: suffix="5th";
-				break;
-		case 6: suffix="6th";
-				break;
-		case 7: suffix = "7th";
-				break;
-		case 8: suffix="8th";
-				break;
-		case 9: suffix="9th";
-				break;
-		case 10:suffix="Final";
+		case 5: suffix="Final";
 				break;
 		default: suffix="";
 	}
-	if(volley_count>10) {
+	if(volley_count>5) {
 		shot1=false;
 		shot2=false;
 		arrow=false;
-		game_area.stop();
-		document.getElementById("volley_count").innerHTML="Game Over";
+		score_display=false;
+		document.getElementById("play_pause").disabled=true;
+		document.getElementById("volley_count").innerHTML="";
 		document.getElementById("fire_2").disabled=true;
 		document.getElementById("fire_1").disabled=true;
+		pause=new component(800,300,"#827b609e", 0,0);
+		text=new add_text("GAME OVER");
+		if(score_1>score_2)
+			winner=new add_text(player1_name+" WINS","red");
+		else
+		if(score_1<score_2)
+			winner=new add_text(player2_name+" WINS","red");
+		else
+			winner=new add_text("TIE GAME","red");
+		game_area.stop();
+		
 	}
 }
 function fire1() {
 	document.getElementById("control_player1").style.display="none";
 	document.getElementById("control_player2").style.display="block";
 	document.getElementById("fire_2").disabled=true;
-    turn++;
-	arrow=false;
-	shot1= new shot_create(45,267,document.getElementById("angle_1").value,document.getElementById("power_1").value);
-	document.getElementById("player_1_name").style.color="#fff";
+	document.getElementById("play_pause").disabled=true;
+	document.getElementById("player_1_name").style.color="#000";
 	document.getElementById("player_1_name").style.textShadow="none";
-	
+    ++turn;
+	arrow=false;
+	var select1=document.getElementById("wepaon_1");
+	weapon=select1.value;
+	select1.remove(select1.selectedIndex);
+    shot1= new shot_create(45,267,document.getElementById("angle_1").value,document.getElementById("power_1").value);
+	fire_sound.play();
 }
 
 function fire2() {
 	document.getElementById("control_player1").style.display="block";
 	document.getElementById("control_player2").style.display="none";
 	document.getElementById("fire_1").disabled=true;
-	turn--;
-	arrow=false;
-	shot2= new shot_create(755,267,document.getElementById("angle_2").value,document.getElementById("power_2").value);
-	document.getElementById("player_2_name").style.color="#fff";
+	document.getElementById("play_pause").disabled=true;
+	document.getElementById("player_2_name").style.color="#000";
 	document.getElementById("player_2_name").style.textShadow="none";
+	--turn;
+	arrow=false;
+	var select2=document.getElementById("wepaon_2");
+	weapon=select2.value;
+	select2.remove(select2.selectedIndex);
+	shot2= new shot_create(755,267,document.getElementById("angle_2").value,document.getElementById("power_2").value);
+	fire_sound.play();
 }
 
 function ui_enable(x) {
@@ -694,8 +967,8 @@ function submit_game_data() {
 
 function play_pause() {
 	var val=document.getElementById("play_pause").value;
-	if(val=="PAUSE") {
-		document.getElementById("play_pause").value="RESUME";
+	if(val=="PAUSE"||val=="pause") {
+		document.getElementById("play_pause").value="resume";
 		document.getElementById("play_pause").style.background="green";
 		document.getElementById("play_pause").style.color="#fff";
 		pause=new component(800,300,"#827b609e", 0,0);
@@ -703,13 +976,17 @@ function play_pause() {
 		updateGameArea();
 		game_area.stop();
 	}
-	else {
-		document.getElementById("play_pause").value="PAUSE";
+	else
+    if(val=="RESUME"||val=="resume") {
+		document.getElementById("play_pause").value="pause";
 		document.getElementById("play_pause").style.background="#ddd";
 		document.getElementById("play_pause").style.color="#000";
 		pause=false;
 		text=false;
 		game_area.resume();
 	}
+}
+
+function restart() {
 }
 	

@@ -30,94 +30,92 @@
 						<img src="./tank_1.png" id="tank_1" style="display:none">
 						<img src="./tank_2.png" id="tank_2" style="display:none">
 						<img src="./arrow.png" id="arrow" style="display:none">
+						<img src="./fire.gif" id="fire" style="display:none">
 					</canvas>
 				</div>
 				<div class="controller_container">
 					<table style="width:100%" >
 					<tr>
 					<td class="calign">
-						<div class="game_control_com" id="control_player1" style="display:block">
+						<div class="game_control_com" >
 							<table style="width:100%" class="game_controller_table" cellspacing="10">
 								<tr>
 									<td style="width:25%;background:none;box-shadow:none;">
 										<div>
-											<input type="button" value="PAUSE" class="fire_button pause" onClick="play_pause();" id="play_pause">
+											<input type="button" value="pause" class="fire_button pause" onClick="play_pause();" id="play_pause">
 										</div>
 										<div style="margin-top:10px">
 											<input type="button" value="RESTART" class="fire_button restart" onClick=" window.location.reload();" id="restart">
 										</div>
 									</td>
-									<td style="width:20%">
-										<div class="control_head">Weapon</div>
-										<div class="control_adjuster">
-											<select>
-												<option value="low">Low</option>
-												<option value="medium" selected>Medium</option>
-												<option value="high">High</option>
-											</select>
-										</div>
+									<td>
+										<table style="width:100%">
+											<tr id="control_player1" style="display:block">
+											<td style="width:30%">
+												<div class="control_head">Weapon</div>
+												<div class="control_adjuster">
+													<select id="wepaon_1">
+														<option value="SmallShot">Small Shot</option>
+														<option value="BigShot">Big Shot</option>
+														<option value="AtomBomb">Atom Bomb</option>
+														<option value="FireBall">Fire Ball</option>
+														<option value="Sniper">Sniper</option>
+													</select>
+												</div>
+											</td>
+											<td style="width:20%">
+												<div class="control_head">Power</div>
+												<div class="control_adjuster">
+													<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_1" style="width:100%">
+												</div>
+											</td>	
+											<td style="width:20%">
+												<div class="control_head">Angle</div>
+												<div class="control_adjuster">
+													<input type="number" class="control_text_inp" value="20" min="0" max="180" id="angle_1" style="width:100%">
+												</div>
+											</td>
+											<td style="width:30%">
+												<input type="button" value="FIRE" class="fire_button" onClick="fire1();" id="fire_1">
+											</td>
+										</tr>
+											<tr id="control_player2" style="display:none">
+											<td style="width:30%">
+												<div class="control_head">Weapon</div>
+												<div class="control_adjuster">
+													<select id="wepaon_2">
+														<option value="SmallShot">Small Shot</option>
+														<option value="BigShot">Big Shot</option>
+														<option value="AtomBomb">Atom Bomb</option>
+														<option value="FireBall">Fire Ball</option>
+														<option value="Sniper">Sniper</option>
+													</select>
+												</div>
+											</td>
+											<td style="width:20%">
+												<div class="control_head">Power</div>
+												<div class="control_adjuster">
+													<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_2" style="width:100%">
+												</div>
+											</td>	
+											<td style="width:20%">
+												<div class="control_head">Angle</div>
+												<div class="control_adjuster">
+													<input type="number" class="control_text_inp" value="160" min="0" max="180" id="angle_2" style="width:100%">
+												</div>
+											</td>
+											<td style="width:30%">
+												<input type="button" value="FIRE" class="fire_button" onClick="fire2();" id="fire_2">
+											</td>
+										</tr>
+										</table>
 									</td>
-									<td style="width:15%">
-										<div class="control_head">Power</div>
-										<div class="control_adjuster">
-											<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_1" style="width:100%">
-										</div>
-									</td>	
-									<td style="width:15%">
-										<div class="control_head">Angle</div>
-										<div class="control_adjuster">
-											<input type="number" class="control_text_inp" value="20" min="0" max="180" id="angle_1" style="width:100%">
-										</div>
-									</td>
-								   <td style="width:25%">
-										<input type="button" value="FIRE" class="fire_button" onClick="fire1();" id="fire_1">
-									</td>
-								</tr>
-							</table>
-						</div>
-						<div class="game_control_com" id="control_player2" style="display:none">
-							<table style="width:100%" class="game_controller_table" cellspacing="10">
-								<tr>
-									<td style="width:25%;background:none;box-shadow:none;">
-										<div>
-											<input type="button" value="PAUSE" class="fire_button pause" onClick="play_pause();" id="play_pause">
-										</div>
-										<div style="margin-top:10px">
-											<input type="button" value="RESTART" class="fire_button restart" onClick=" window.location.reload();" id="restart">
-										</div>
-									</td>
-									<td style="width:20%">
-										<div class="control_head">Weapon</div>
-										<div class="control_adjuster">
-											<select>
-												<option value="low">Low</option>
-												<option value="medium" selected>Medium</option>
-												<option value="high">High</option>
-											</select>
-										</div>
-									</td>
-									<td style="width:15%">
-										<div class="control_head">Power</div>
-										<div class="control_adjuster">
-											<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_2" style="width:100%">
-										</div>
-									</td>	
-									<td style="width:15%">
-										<div class="control_head">Angle</div>
-										<div class="control_adjuster">
-											<input type="number" class="control_text_inp" value="160" min="0" max="180" id="angle_2" style="width:100%">
-										</div>
-									</td>
-								    <td style="width:25%">
-										<input type="button" value="FIRE" class="fire_button" onClick="fire2();" id="fire_2">
-									</td>
-								
 								</tr>
 							</table>
 						</div>
 					</td>
 					</tr>
-				    </table>
+					</table>
 				</div>
 			</div>
 			<div class="welcome_screen" id="welcome_screen" style="display:block">
