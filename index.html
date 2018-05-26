@@ -68,13 +68,13 @@
 											<td style="width:20%">
 												<div class="control_head">Power</div>
 												<div class="control_adjuster">
-													<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_1" style="width:100%">
+													<input type="number" class="control_text_inp" value="40" oninput='validate(this.id,"power")'  min="0" max="100" id="power_1" style="width:100%">
 												</div>
 											</td>	
 											<td style="width:20%">
 												<div class="control_head">Angle</div>
 												<div class="control_adjuster">
-													<input type="number" class="control_text_inp" value="20" min="0" max="180" id="angle_1" style="width:100%">
+													<input type="number" class="control_text_inp" value="20" oninput='validate(this.id,"angle")' min="0" max="180" id="angle_1" style="width:100%">
 												</div>
 											</td>
 											<td style="width:30%">
@@ -97,13 +97,13 @@
 											<td style="width:20%">
 												<div class="control_head">Power</div>
 												<div class="control_adjuster">
-													<input type="number" class="control_text_inp" value="40" min="0" max="100" id="power_2" style="width:100%">
+													<input type="number" class="control_text_inp" value="40" oninput='validate(this.id,"power")' min="0" max="100" id="power_2" style="width:100%">
 												</div>
 											</td>	
 											<td style="width:20%">
 												<div class="control_head">Angle</div>
 												<div class="control_adjuster">
-													<input type="number" class="control_text_inp" value="160" min="0" max="180" id="angle_2" style="width:100%">
+													<input type="number" class="control_text_inp" value="160" oninput='validate(this.id,"angle")' min="0" max="180" id="angle_2" style="width:100%">
 												</div>
 											</td>
 											<td style="width:30%">
@@ -131,7 +131,7 @@
 					</div>
 					<div class="ws_div user_input_container" id="input_container" style="display:block">
 						<div class="cfx ws_div error" id="error_box" style="display:none;">
-							You missed one of the field! Please fill and submit again.
+							Player name is compulsory. Please try again.
 						</div>
 						<br>
 						<div class="cfx ws_div">

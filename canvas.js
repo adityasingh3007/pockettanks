@@ -21,6 +21,10 @@ var takeshot;
 var atombomb_sound;
 var fireball_sound;
 var sniper;
+var background_music;
+var pause_menu_sound;
+var winner_sound;
+var tie_game_sound;
 
 var turn=1;
 var score_1=0;
@@ -58,6 +62,11 @@ function startGame() {
 	fireball_sound = new sound("./fire.mp3");
 	takeshot=new sound("takeshot.mp3");
 	sniper= new sound ("sniper.mp3");
+	background_music=new sound("bgmusic.mp3");
+	background_music.play();
+	pause_menu_sound=new sound ("pause.mp3");
+	winner_sound=new sound ("win.mp3");
+	tie_game_sound=new sound ("tie.mp3");
 }
 
 var game_area = {
@@ -92,6 +101,14 @@ function sound(src) {
     this.sound.src = src;
     this.sound.setAttribute("preload", "auto");
     this.sound.setAttribute("controls", "none");
+	if(src=="bgmusic.mp3") {
+		this.sound.loop=true;
+		this.sound.volume=0.5;
+	}
+	else
+	if(src=="pause.mp3"||src=="tie.mp3") {
+		this.sound.loop=true;
+	}
     this.sound.style.display = "none";
     document.getElementById("canvas_container").appendChild(this.sound);
     this.play = function(){
@@ -1019,16 +1036,23 @@ function updateGameArea() {
 }
 
 function show_winner() {
+		background_music.stop();
 		score_display=false;
 		pause=new component(800,300,"#827b609e", 0,0);
 		text=new add_text("GAME OVER");
-		if(score_1>score_2)
+		if(score_1>score_2) {
 			winner=new add_text(player1_name+" WINS","red");
+			winner_sound.play();
+		}
 		else
-		if(score_1<score_2)
+		if(score_1<score_2) {
 			winner=new add_text(player2_name+" WINS","red");
-		else
+			winner_sound.play();
+		}
+		else {
 			winner=new add_text("TIE GAME","yellow");
+			tie_game_sound.play();
+		}
 		document.getElementById("play_pause").style.display="none";
 		document.getElementById("fire_1").disabled=true;
 		document.getElementById("fire_2").disabled=true;
@@ -1141,6 +1165,8 @@ function play_pause() {
 		text=new add_text("PAUSED");
 		updateGameArea();
 		game_area.stop();
+		background_music.stop();
+		pause_menu_sound.play();
 	}
 	else
     if(val=="RESUME"||val=="resume") {
@@ -1150,9 +1176,26 @@ function play_pause() {
 		pause=false;
 		text=false;
 		game_area.resume();
+		background_music.play();
+		pause_menu_sound.stop();
 	}
 }
 
 function restart() {
+}
+
+function validate(id,category) {
+	var value=document.getElementById(id).value;
+	if(value<0)
+		document.getElementById(id).value=0;
+	if(category=="power") {
+		if(value>100)
+			document.getElementById(id).value=100;
+	}
+	else {
+		if(value>180)
+			document.getElementById(id).value=180;
+	}
+	
 }
 	
