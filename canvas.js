@@ -15,7 +15,12 @@ var shot1=false;
 var shot2=false;
 
 var fire=false;
-var fire_sound;
+var explosion=false;
+
+var takeshot;
+var atombomb_sound;
+var fireball_sound;
+var sniper;
 
 var turn=1;
 var score_1=0;
@@ -49,7 +54,10 @@ function startGame() {
 	document.getElementById("player_1_score").innerHTML=score_1;
 	document.getElementById("player_2_score").innerHTML=score_2;
 	document.getElementById("volley_count").innerHTML=suffix+ " Volley";
-	fire_sound = new sound("./takeshot.mp3");
+	atombomb_sound = new sound("./atomshot.mp3");
+	fireball_sound = new sound("./fire.mp3");
+	takeshot=new sound("takeshot.mp3");
+	sniper= new sound ("sniper.mp3");
 }
 
 var game_area = {
@@ -75,7 +83,7 @@ var game_area = {
         clearInterval(this.interval);
     },
 	resume : function() {
-		this.interval = setInterval(updateGameArea, 20);
+		this.interval = setInterval(updateGameArea,33);
 	}
 }
 
@@ -277,20 +285,116 @@ function add_score(text,condition) {
 	}
 }
 
-function add_fire(x) {
+
+function add_atom(x,score,status) {
 	this.x=x;
+	this.ctx=game_area.context;
+	this.cycle=0;
+	this.startx=0;
+	this.starty=0;
+	explosion_img=document.getElementById("atom");
 	this.start_time=Date.now();
 	this.update = function(){
 		this.current_time=Date.now();
 		this.millis=this.current_time-this.start_time;
 		this.seconds=(this.millis/150);
-		if(this.seconds<=5) {
-			fire_img=document.getElementById("fire");
-			ctx = game_area.context;
-		    ctx.drawImage(fire_img,this.x,265,60,30);
+		if(this.seconds<=11) {
+			ctx.drawImage(explosion_img,this.startx,this.starty,192,197,this.x,262,90,35);
+			this.startx+=192;
+			if(this.startx>=768) {
+				this.startx=0;
+				this.starty+=197;
+				if(this.starty>=551)
+					this.starty=0;
+			}
 		}
-		else
+		else {
+			explosion=false;
+			if(turn==2){
+				if(this.x==0) {
+					score_display=new add_score(-score,status);
+					score_1-=score;
+				}
+				else
+				if(this.x==712||this.x==707) {
+					score_display=new add_score(score,status);
+					score_1+=score;	
+				}
+			}
+			if(turn==1){
+				if(this.x==712||this.x==707) {
+					score_display=new add_score(-score,status);
+					score_2-=score;
+				}
+				else
+				if(this.x==0) {
+					score_display=new add_score(score,status);
+					score_2+=score;	
+				}
+			volley_count++;
+			}
+			document.getElementById("fire_1").disabled=false;
+			document.getElementById("fire_2").disabled=false;
+			document.getElementById("play_pause").disabled=false;
+			arrow=new add_arrow();
+		}
+	}
+}
+
+
+function add_fire(x,score,status) {
+	this.x=x;
+	this.ctx=game_area.context;
+	this.cycle=0;
+	this.startx=0;
+	this.starty=0;
+	fire_img=document.getElementById("fire");
+	this.start_time=Date.now();
+	this.update = function(){
+		this.current_time=Date.now();
+		this.millis=this.current_time-this.start_time;
+		this.seconds=(this.millis/150);
+		if(this.seconds<=30) {
+			ctx.drawImage(fire_img,this.startx,this.starty,64,80.5,this.x,260,90,35);
+			this.startx+=64;
+			if(this.startx>=448) {
+				this.startx=0;
+				this.starty+=80.5;
+				if(this.starty>=241.5)
+					this.starty=0;
+			}
+		}
+		else {
+			fireball_sound.stop();
 			fire=false;
+			if(turn==2){
+				if(this.x==0) {
+					score_display=new add_score(-score,status);
+					score_1-=score;
+				}
+				else
+				if(this.x==712) {
+					score_display=new add_score(score,status);
+					score_1+=score;	
+				}
+			}
+			if(turn==1){
+				if(this.x==712) {
+					score_display=new add_score(-score,status);
+					score_2-=score;
+				}
+				else
+				if(this.x==0) {
+					score_display=new add_score(score,status);
+					score_2+=score;	
+				}
+			volley_count++;
+			}
+			document.getElementById("fire_1").disabled=false;
+			document.getElementById("fire_2").disabled=false;
+			arrow=new add_arrow();
+			document.getElementById("play_pause").disabled=false;
+		}
 	}
 }
 
@@ -325,10 +429,6 @@ function shot_create(x,y,angle,power) {
 					if(this.x>=720&&this.x<=790) {
 						shot1=false;
 						shot2=false;
-						document.getElementById("fire_1").disabled=false;
-						document.getElementById("fire_2").disabled=false;
-						arrow=new add_arrow();
-						document.getElementById("play_pause").disabled=false;
 						if((this.x>=720&&this.x<740)||(this.x>770&&this.x<=790)) {
 							if(weapon=="SmallShot") {
 								this.score=20;
@@ -373,28 +473,48 @@ function shot_create(x,y,angle,power) {
 						}
 						if(turn==2){
 							if(weapon=="FireBall") {
-								fire=new add_fire(20);
+								fire=new add_fire(712,this.score,"plus");
+								fireball_sound.play();
 							}
-							score_display=new add_score(this.score,"plus");
-							score_1+=this.score;
+							else
+							if(weapon=="AtomBomb") {
+								explosion=new add_atom(707,this.score,"plus");
+								atombomb_sound.play();
+							}
+							else {
+								score_display=new add_score(this.score,"plus");
+								score_1+=this.score;	
+								document.getElementById("fire_1").disabled=false;
+								document.getElementById("fire_2").disabled=false;
+								arrow=new add_arrow();
+								document.getElementById("play_pause").disabled=false;
+							}
 						}
 						else if(turn==1) {
 							if(weapon=="FireBall") {
-								fire=new add_fire(730);
+								fire=new add_fire(712,this.score,"danger");
+								fireball_sound.play();
 							}
-							score_display=new add_score(-this.score,"danger");
-							score_2-=this.score;
-							volley_count++;
+							else
+							if(weapon=="AtomBomb") {
+								explosion=new add_atom(707,this.score,"danger");
+								atombomb_sound.play();
+							}
+							else {
+								score_display=new add_score(-this.score,"danger");
+								score_2-=this.score;	
+								document.getElementById("fire_1").disabled=false;
+								document.getElementById("fire_2").disabled=false;
+								arrow=new add_arrow();
+								document.getElementById("play_pause").disabled=false;
+								volley_count++;
+							}
 						}
 					}
 					else
 					if(this.x>=10&&this.x<=90) {
 						shot1=false;
 						shot2=false;
-						document.getElementById("fire_1").disabled=false;
-						document.getElementById("fire_2").disabled=false;
-						arrow=new add_arrow();
-						document.getElementById("play_pause").disabled=false
 						if((this.x>=10&&this.x<30)||(this.x>70&&this.x<=90)) {
 							if(weapon=="SmallShot") {
 								this.score=20;
@@ -439,18 +559,43 @@ function shot_create(x,y,angle,power) {
 						}
 						if(turn==2) {
 							if(weapon=="FireBall") {
-								fire=new add_fire(20);
+								fire=new add_fire(0,this.score,"danger");
+								fireball_sound.play();
 							}
-							score_display=new add_score(-this.score,"danger");
-							score_1-=this.score;
+							else
+							if(weapon=="AtomBomb") {
+								explosion=new add_atom(0,this.score,"danger");
+								atombomb_sound.play();
+							}
+							else {
+								score_display=new add_score(-this.score,"danger");
+								score_1-=this.score;	
+								document.getElementById("fire_1").disabled=false;
+								document.getElementById("fire_2").disabled=false;
+								arrow=new add_arrow();
+								document.getElementById("play_pause").disabled=false;
+							}
 						}
 						else if(turn==1) {
 							if(weapon=="FireBall") {
-								fire=new add_fire(730);
+								fire=new add_fire(0,this.score,"plus");
+								fireball_sound.play();
 							}
-							score_display=new add_score(this.score,"plus");
-							score_2+=this.score;
-							volley_count++;
+							else
+							if(weapon=="AtomBomb") {
+								explosion=new add_atom(0,this.score,"plus");
+								atombomb_sound.play();
+							}
+							else {
+								score_display=new add_score(this.score,"plus");
+								score_2+=this.score;	
+								document.getElementById("fire_1").disabled=false;
+								document.getElementById("fire_2").disabled=false;
+								arrow=new add_arrow();
+								document.getElementById("play_pause").disabled=false;
+								volley_count++;
+							}
+							
 						}
 					}	
 				}				
@@ -805,10 +950,17 @@ function shot_create(x,y,angle,power) {
 			this.radius=5;
 			this.color="#E42217";	
 		}
-		ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
-		ctx.fillStyle=this.color;
-		ctx.fill();
-		ctx.closePath();
+		if(weapon!="AtomBomb") {
+			ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
+			ctx.fillStyle=this.color;
+			ctx.fill();
+			ctx.closePath();
+		}
+		else {
+			ctx = game_area.context;
+			atom_img=document.getElementById("atombomb");
+			ctx.drawImage(atom_img,this.x,this.y,18,16);
+		}
 	}
 }
 
@@ -838,7 +990,6 @@ function updateGameArea() {
 	document.getElementById("player_1_score").innerHTML=score_1;
 	document.getElementById("player_2_score").innerHTML=score_2;
 	document.getElementById("volley_count").innerHTML=suffix+" Volley";
-	over_volley_check();
 	mountain.update();
 	if(arrow!=false)
 		arrow.update();
@@ -849,18 +1000,42 @@ function updateGameArea() {
 		shot1.update();
 	if(shot2!=false)
 		shot2.update();
-
 	if(fire!=false)
 		fire.update();
-	
+	if(explosion!=false)
+		explosion.update();
 	if(pause!=false)
 		pause.update();
 	if(score_display!=false)
 		score_display.update();
     if(text!=false)
 		text.update();
-	if(winner!=false)
+	if(winner!=false) {
 		winner.update();
+		game_area.stop();
+	}
+	else
+		over_volley_check();
+}
+
+function show_winner() {
+		score_display=false;
+		pause=new component(800,300,"#827b609e", 0,0);
+		text=new add_text("GAME OVER");
+		if(score_1>score_2)
+			winner=new add_text(player1_name+" WINS","red");
+		else
+		if(score_1<score_2)
+			winner=new add_text(player2_name+" WINS","red");
+		else
+			winner=new add_text("TIE GAME","yellow");
+		document.getElementById("play_pause").style.display="none";
+		document.getElementById("fire_1").disabled=true;
+		document.getElementById("fire_2").disabled=true;
+		updateGameArea();
+		document.getElementById("volley_count").innerHTML="";
+		game_area.stop();
+		
 }
 function over_volley_check() {
 	switch(volley_count) {
@@ -880,22 +1055,7 @@ function over_volley_check() {
 		shot1=false;
 		shot2=false;
 		arrow=false;
-		score_display=false;
-		document.getElementById("play_pause").disabled=true;
-		document.getElementById("volley_count").innerHTML="";
-		document.getElementById("fire_2").disabled=true;
-		document.getElementById("fire_1").disabled=true;
-		pause=new component(800,300,"#827b609e", 0,0);
-		text=new add_text("GAME OVER");
-		if(score_1>score_2)
-			winner=new add_text(player1_name+" WINS","red");
-		else
-		if(score_1<score_2)
-			winner=new add_text(player2_name+" WINS","red");
-		else
-			winner=new add_text("TIE GAME","red");
-		game_area.stop();
-		
+		setTimeout(show_winner,800);
 	}
 }
 function fire1() {
@@ -911,7 +1071,10 @@ function fire1() {
 	weapon=select1.value;
 	select1.remove(select1.selectedIndex);
     shot1= new shot_create(45,267,document.getElementById("angle_1").value,document.getElementById("power_1").value);
-	fire_sound.play();
+	if(weapon!="Sniper")
+		takeshot.play();
+	else 
+		sniper.play();
 }
 
 function fire2() {
@@ -927,7 +1090,10 @@ function fire2() {
 	weapon=select2.value;
 	select2.remove(select2.selectedIndex);
 	shot2= new shot_create(755,267,document.getElementById("angle_2").value,document.getElementById("power_2").value);
-	fire_sound.play();
+	if(weapon!="Sniper")
+		takeshot.play();
+	else 
+		sniper.play();
 }
 
 function ui_enable(x) {
@@ -961,7 +1127,7 @@ function submit_game_data() {
 		document.getElementById("instruction").style.display="none";
 		document.getElementById("input_container").style.display="none";
 		document.getElementById("loading").style.display="block";
-		setTimeout(initiallize, 3000);
+		setTimeout(initiallize, 500);
 	}
 }
 
